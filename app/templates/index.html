@@ -1,0 +1,531 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CAD Multimodal Risk Assessment System</title>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-color: #0f172a;
+            --card-bg: rgba(30, 41, 59, 0.7);
+            --border-color: rgba(255, 255, 255, 0.1);
+            --primary: #3b82f6;
+            --primary-gradient: linear-gradient(135deg, #3b82f6, #8b5cf6);
+            --risk-gradient: linear-gradient(135deg, #f43f5e, #fb7185);
+            --safe-gradient: linear-gradient(135deg, #10b981, #34d399);
+            --text-color: #f8fafc;
+            --text-muted: #94a3b8;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Outfit', sans-serif;
+            background: radial-gradient(circle at top right, #1e1b4b, #0f172a);
+            color: var(--text-color);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 2rem;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 2.5rem;
+            max-width: 800px;
+        }
+
+        h1 {
+            font-size: 2.5rem;
+            font-weight: 700;
+            background: linear-gradient(to right, #60a5fa, #c084fc);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 0.5rem;
+        }
+
+        header p {
+            color: var(--text-muted);
+            font-size: 1.1rem;
+        }
+
+        .container {
+            display: grid;
+            grid-template-columns: 1.2fr 1fr;
+            gap: 2rem;
+            width: 100%;
+            max-width: 1200px;
+        }
+
+        @media (max-width: 968px) {
+            .container {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .card {
+            background: var(--card-bg);
+            backdrop-filter: blur(16px);
+            border: 1px solid var(--border-color);
+            border-radius: 24px;
+            padding: 2rem;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+            transition: all 0.3s ease;
+        }
+
+        h2 {
+            font-size: 1.5rem;
+            margin-bottom: 1.5rem;
+            border-bottom: 1px solid var(--border-color);
+            padding-bottom: 0.75rem;
+            font-weight: 600;
+            color: #e2e8f0;
+        }
+
+        .form-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1.25rem;
+        }
+
+        @media (max-width: 576px) {
+            .form-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+
+        .form-group.full-width {
+            grid-column: 1 / -1;
+        }
+
+        label {
+            font-size: 0.9rem;
+            font-weight: 600;
+            color: #cbd5e1;
+        }
+
+        input, select {
+            background: rgba(15, 23, 42, 0.6);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 0.75rem 1rem;
+            color: var(--text-color);
+            font-family: inherit;
+            font-size: 0.95rem;
+            outline: none;
+            transition: border-color 0.2s ease, box-shadow 0.2s ease;
+        }
+
+        input:focus, select:focus {
+            border-color: #60a5fa;
+            box-shadow: 0 0 0 3px rgba(96, 165, 250, 0.2);
+        }
+
+        .btn-submit {
+            grid-column: 1 / -1;
+            background: var(--primary-gradient);
+            border: none;
+            border-radius: 12px;
+            color: white;
+            font-size: 1.1rem;
+            font-weight: 600;
+            padding: 1rem;
+            cursor: pointer;
+            transition: transform 0.2s ease, opacity 0.2s ease;
+            margin-top: 1rem;
+            box-shadow: 0 10px 20px rgba(59, 130, 246, 0.3);
+        }
+
+        .btn-submit:hover {
+            opacity: 0.95;
+            transform: translateY(-2px);
+        }
+
+        .file-upload {
+            border: 2px dashed rgba(255, 255, 255, 0.15);
+            border-radius: 16px;
+            padding: 2rem;
+            text-align: center;
+            cursor: pointer;
+            transition: border-color 0.2s ease, background 0.2s ease;
+        }
+
+        .file-upload:hover {
+            border-color: #60a5fa;
+            background: rgba(96, 165, 250, 0.05);
+        }
+
+        .file-upload input {
+            display: none;
+        }
+
+        .upload-icon {
+            font-size: 2rem;
+            margin-bottom: 0.5rem;
+            color: #60a5fa;
+        }
+
+        .upload-text {
+            color: var(--text-muted);
+            font-size: 0.9rem;
+        }
+
+        .dashboard {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            height: 100%;
+            min-height: 400px;
+        }
+
+        .result-panel {
+            width: 100%;
+            display: none;
+            animation: fadeIn 0.5s ease forwards;
+        }
+
+        .placeholder-panel {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .placeholder-icon {
+            font-size: 4rem;
+            opacity: 0.3;
+        }
+
+        .gauge-container {
+            position: relative;
+            width: 200px;
+            height: 200px;
+            margin: 1.5rem auto;
+            border-radius: 50%;
+            background: radial-gradient(circle, rgba(15, 23, 42, 0.8) 60%, transparent 61%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-direction: column;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.4);
+            border: 4px solid var(--border-color);
+        }
+
+        .gauge-value {
+            font-size: 2.8rem;
+            font-weight: 700;
+            line-height: 1;
+        }
+
+        .gauge-label {
+            font-size: 0.85rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: var(--text-muted);
+            margin-top: 4px;
+        }
+
+        .badge {
+            display: inline-block;
+            padding: 0.5rem 1.5rem;
+            border-radius: 9999px;
+            font-weight: 700;
+            font-size: 1rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 1.5rem;
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+        }
+
+        .badge-risk {
+            background: var(--risk-gradient);
+            color: white;
+        }
+
+        .badge-safe {
+            background: var(--safe-gradient);
+            color: white;
+        }
+
+        .explanation-card {
+            background: rgba(15, 23, 42, 0.4);
+            border-radius: 16px;
+            padding: 1.25rem;
+            border: 1px solid var(--border-color);
+            margin-top: 1.5rem;
+            text-align: left;
+            font-size: 0.95rem;
+            line-height: 1.5;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <h1>Coronary Artery Disease Risk Assessment</h1>
+        <p>A Multimodal Deep Learning & Clinical Fusion Diagnostic Dashboard</p>
+    </header>
+
+    <div class="container">
+        <!-- Input Form Card -->
+        <div class="card">
+            <h2>Patient Diagnostic Parameters</h2>
+            <form id="cadForm" enctype="multipart/form-data">
+                <div class="form-grid">
+                    <!-- Sex -->
+                    <div class="form-group">
+                        <label for="male">Sex</label>
+                        <select name="male" id="male" required>
+                            <option value="1">Male</option>
+                            <option value="0">Female</option>
+                        </select>
+                    </div>
+
+                    <!-- Age -->
+                    <div class="form-group">
+                        <label for="age">Age (years)</label>
+                        <input type="number" name="age" id="age" min="1" max="120" value="45" required>
+                    </div>
+
+                    <!-- Education -->
+                    <div class="form-group">
+                        <label for="education">Education Level</label>
+                        <select name="education" id="education" required>
+                            <option value="1.0">High School / Undergrad</option>
+                            <option value="2.0">College / Vocational</option>
+                            <option value="3.0">University Degree</option>
+                            <option value="4.0">Postgraduate / Professional</option>
+                        </select>
+                    </div>
+
+                    <!-- Current Smoker -->
+                    <div class="form-group">
+                        <label for="currentSmoker">Current Smoker</label>
+                        <select name="currentSmoker" id="currentSmoker" required onchange="toggleCigs()">
+                            <option value="0">No</option>
+                            <option value="1">Yes</option>
+                        </select>
+                    </div>
+
+                    <!-- Cigarettes Per Day -->
+                    <div class="form-group">
+                        <label for="cigsPerDay">Cigarettes per Day</label>
+                        <input type="number" name="cigsPerDay" id="cigsPerDay" min="0" max="100" value="0">
+                    </div>
+
+                    <!-- BP Meds -->
+                    <div class="form-group">
+                        <label for="BPMeds">On Blood Pressure Meds</label>
+                        <select name="BPMeds" id="BPMeds" required>
+                            <option value="0.0">No</option>
+                            <option value="1.0">Yes</option>
+                        </select>
+                    </div>
+
+                    <!-- Stroke -->
+                    <div class="form-group">
+                        <label for="prevalentStroke">Prevalent Stroke History</label>
+                        <select name="prevalentStroke" id="prevalentStroke" required>
+                            <option value="0">No</option>
+                            <option value="1">Yes</option>
+                        </select>
+                    </div>
+
+                    <!-- Hypertension -->
+                    <div class="form-group">
+                        <label for="prevalentHyp">Prevalent Hypertension</label>
+                        <select name="prevalentHyp" id="prevalentHyp" required>
+                            <option value="0">No</option>
+                            <option value="1">Yes</option>
+                        </select>
+                    </div>
+
+                    <!-- Diabetes -->
+                    <div class="form-group">
+                        <label for="diabetes">Diabetic Status</label>
+                        <select name="diabetes" id="diabetes" required>
+                            <option value="0">No</option>
+                            <option value="1">Yes</option>
+                        </select>
+                    </div>
+
+                    <!-- Total Cholesterol -->
+                    <div class="form-group">
+                        <label for="totChol">Total Cholesterol (mg/dL)</label>
+                        <input type="number" name="totChol" id="totChol" min="50" max="600" value="220" required>
+                    </div>
+
+                    <!-- Systolic BP -->
+                    <div class="form-group">
+                        <label for="sysBP">Systolic BP (mm Hg)</label>
+                        <input type="number" name="sysBP" id="sysBP" min="60" max="300" value="130" required>
+                    </div>
+
+                    <!-- Diastolic BP -->
+                    <div class="form-group">
+                        <label for="diaBP">Diastolic BP (mm Hg)</label>
+                        <input type="number" name="diaBP" id="diaBP" min="40" max="200" value="80" required>
+                    </div>
+
+                    <!-- BMI -->
+                    <div class="form-group">
+                        <label for="BMI">Body Mass Index (BMI)</label>
+                        <input type="number" name="BMI" id="BMI" step="0.01" min="10" max="60" value="24.5" required>
+                    </div>
+
+                    <!-- Heart Rate -->
+                    <div class="form-group">
+                        <label for="heartRate">Heart Rate (bpm)</label>
+                        <input type="number" name="heartRate" id="heartRate" min="30" max="220" value="72" required>
+                    </div>
+
+                    <!-- Glucose -->
+                    <div class="form-group">
+                        <label for="glucose">Glucose Level (mg/dL)</label>
+                        <input type="number" name="glucose" id="glucose" min="30" max="500" value="85" required>
+                    </div>
+
+                    <!-- Retinal Fundus File Upload -->
+                    <div class="form-group full-width">
+                        <label>Retinal Fundus Photograph</label>
+                        <div class="file-upload" onclick="document.getElementById('imageFile').click()">
+                            <div class="upload-icon">👁️</div>
+                            <div class="upload-text" id="uploadText">Click to select fundus image...</div>
+                            <input type="file" name="image" id="imageFile" accept="image/*" onchange="updateUploadText(this)" required>
+                        </div>
+                    </div>
+
+                    <button type="submit" class="btn-submit">Calculate CAD Risk Profile</button>
+                </div>
+            </form>
+        </div>
+
+        <!-- Dashboard Result Card -->
+        <div class="card">
+            <h2>Diagnostic Output Summary</h2>
+            <div class="dashboard">
+                <!-- Placeholder Panel -->
+                <div class="placeholder-panel" id="placeholderPanel">
+                    <div class="placeholder-icon">🩺</div>
+                    <p style="color: var(--text-muted)">Please enter the patient statistics and upload an eye image to compute CAD risk diagnostics.</p>
+                </div>
+
+                <!-- Result Panel -->
+                <div class="result-panel" id="resultPanel">
+                    <div id="resultBadge" class="badge">At-Risk</div>
+                    
+                    <div class="gauge-container" id="gaugeBox">
+                        <div class="gauge-value" id="gaugeVal">0.0%</div>
+                        <div class="gauge-label">Probability</div>
+                    </div>
+                    
+                    <div class="explanation-card" id="explanationText">
+                        <strong>Clinical Assessment:</strong> Patient displays an elevated risk profile based on high pulse pressure and deep neural representation. Recommended for secondary cardiac screening.
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function toggleCigs() {
+            const isSmoker = document.getElementById('currentSmoker').value === "1";
+            const cigsField = document.getElementById('cigsPerDay');
+            if (!isSmoker) {
+                cigsField.value = 0;
+                cigsField.setAttribute('disabled', 'true');
+            } else {
+                cigsField.removeAttribute('disabled');
+            }
+        }
+
+        function updateUploadText(input) {
+            const textEl = document.getElementById('uploadText');
+            if (input.files.length > 0) {
+                textEl.innerText = input.files[0].name;
+            } else {
+                textEl.innerText = "Click to select fundus image...";
+            }
+        }
+
+        document.getElementById('cadForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            
+            const formData = new FormData(this);
+            
+            // Set up loading status
+            document.getElementById('placeholderPanel').style.display = 'none';
+            const resultPanel = document.getElementById('resultPanel');
+            resultPanel.style.display = 'none';
+            
+            try {
+                const response = await fetch('/predict', {
+                    method: 'POST',
+                    body: formData
+                });
+                
+                const data = await response.json();
+                
+                if (data.error) {
+                    alert("Error: " + data.error);
+                    document.getElementById('placeholderPanel').style.display = 'flex';
+                    return;
+                }
+                
+                // Show results
+                resultPanel.style.display = 'block';
+                const probPercent = (data.cad_probability * 100).toFixed(1) + "%";
+                document.getElementById('gaugeVal').innerText = probPercent;
+                
+                const badge = document.getElementById('resultBadge');
+                const gaugeBox = document.getElementById('gaugeBox');
+                
+                if (data.risk_level === "High") {
+                    badge.innerText = "At-Risk";
+                    badge.className = "badge badge-risk";
+                    gaugeBox.style.borderColor = "#f43f5e";
+                    document.getElementById('explanationText').innerHTML = `
+                        <strong>Multimodal Assessment:</strong> The model calculated a <strong>${probPercent}</strong> probability of CAD. 
+                        Because this exceeds our custom screening threshold (0.2), the patient is flagged as <strong>AT-RISK</strong>. 
+                        A clinical review is recommended.
+                    `;
+                } else {
+                    badge.innerText = "Low-Risk";
+                    badge.className = "badge badge-safe";
+                    gaugeBox.style.borderColor = "#10b981";
+                    document.getElementById('explanationText').innerHTML = `
+                        <strong>Multimodal Assessment:</strong> The model calculated a <strong>${probPercent}</strong> probability of CAD. 
+                        This is within normal boundaries (below the 0.2 threshold). The patient is flagged as <strong>LOW-RISK</strong>.
+                    `;
+                }
+                
+            } catch (err) {
+                alert("Request failed. Please make sure the Flask application is running.");
+                document.getElementById('placeholderPanel').style.display = 'flex';
+            }
+        });
+
+        // Initialize state
+        toggleCigs();
+    </script>
+</body>
+</html>

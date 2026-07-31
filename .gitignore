@@ -1,0 +1,26 @@
+# Python bytecode & cache
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Jupyter Notebooks
+.ipynb_checkpoints/
+*/.ipynb_checkpoints/*
+
+# Large Datasets
+data/
+*.csv
+*.jpg
+*.png
+*.npy
+
+# Model Checkpoints & Serialization
+*.pkl
+*.h5
+*.joblib
+models/
+
+# Virtual Environments
+venv/
+.venv/
+env/
