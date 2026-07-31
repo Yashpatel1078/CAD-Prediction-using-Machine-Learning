@@ -1,0 +1,3 @@
+# Treat template notebooks as documentation to make Python the dominant language
+notebooks/EDA.ipynb linguist-documentation=true
+notebooks/Evaluation.ipynb linguist-documentation=true
