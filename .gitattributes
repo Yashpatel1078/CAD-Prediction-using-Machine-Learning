@@ -1,3 +1,5 @@
-# Treat template notebooks as documentation to make Python the dominant language
-notebooks/EDA.ipynb linguist-documentation=true
-notebooks/Evaluation.ipynb linguist-documentation=true
+# Ignore the heavy training notebook in language stats to make Python the dominant language
+notebooks/Training.ipynb linguist-documentation=true
+# Keep the small EDA and Evaluation notebooks detectable so Jupyter Notebook still shows up in stats
+notebooks/EDA.ipynb linguist-documentation=false
+notebooks/Evaluation.ipynb linguist-documentation=false
