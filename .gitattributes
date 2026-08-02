@@ -3,5 +3,5 @@ notebooks/Training.ipynb linguist-documentation=true
 # Keep the small EDA and Evaluation notebooks detectable so Jupyter Notebook still shows up in stats
 notebooks/EDA.ipynb linguist-documentation=false
 notebooks/Evaluation.ipynb linguist-documentation=false
-# Ignore the HTML front-end file in language stats so Python is dominant and HTML is less/zero
-app/index.html linguist-documentation=true
+# Ignore all HTML files in language stats so Python is dominant and HTML is hidden
+*.html linguist-documentation=true
