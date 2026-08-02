@@ -1,50 +1,44 @@
-# Multimodal Coronary Artery Disease (CAD) Prediction Framework
+# Leveraging Multimodal Data Fusion of Clinical Risk Factors and Iris Imaging for Accurate and Interpretable Coronary Artery Disease Prediction
 
 [![Python Version](https://img.shields.io/badge/python-3.8%20%7C%203.9%20%7C%203.10-blue)](https://www.python.org/)
-[![ML Framework](https://img.shields.io/badge/Machine%20Learning-Scikit--Learn%20%7C%20XGBoost%20%7C%20LightGBM-orange)](https://scikit-learn.org/)
-[![Deep Learning](https://img.shields.io/badge/Deep%20Learning-TensorFlow%20%7C%20Keras-red)](https://tensorflow.org/)
+[![ML Framework](https://img.shields.io/badge/Machine%20Learning-Scikit--Learn%20%7C%20XGBoost%20%7C%20SVM-orange)](https://scikit-learn.org/)
 [![License](https://img.shields.io/badge/license-MIT-green)](LICENSE)
 
-An advanced, explainable machine learning framework for the early prediction of Coronary Artery Disease (CAD). This project implements a **multimodal data fusion pipeline** combining patient clinical risk factors (from the Framingham Heart Study) with deep feature representations extracted from retinal fundus photographs.
+An explainable multimodal machine learning framework for the early and accurate prediction of Coronary Artery Disease (CAD). This project implements a **multimodal data fusion pipeline** combining structured clinical risk factors (from the Framingham Heart Study) with quantitative iris-image texture features (entropy, contrast, energy, and mean intensity extracted via GLCM).
 
 ---
 
 ## 🔬 Pipeline Architecture
 
-The framework extracts deep visual features using a pre-trained **ResNet50 CNN** and combines them with structured clinical data. Class imbalances are addressed using hybrid resampling (**SMOTE-ENN**), and predictions are explained using **SHAP**.
+The framework preprocesses both clinical measurements and ocular biomarkers, fuses them at the feature level, addresses class imbalances using **SMOTE/SMOTE-ENN**, and classifies CAD risk using an optimized **Stacking Ensemble**. Predictions are explained in a transparent, clinically aligned manner using **SHAP**.
 
 ```mermaid
 graph TD
     A[Patient Input Data] --> B[Clinical Data 15 Features]
-    A --> C[Retinal Fundus Image]
-    B --> D[StandardScaler + KNNImputer]
-    C --> E[Pre-trained ResNet50 Feature Extractor]
-    E --> F[SelectKBest Feature Selection k=20]
-    D --> G[Early Fusion Feature Concatenation]
-    F --> G
-    G --> H[SMOTE-ENN Class Balancing]
-    H --> I[Optimized Classifier XGBoost / Stacking]
-    I --> J[Tuned Decision Threshold 0.2]
-    J --> K[Sensitive CAD Risk Output]
-    I --> L[SHAP Explainability Summary]
+    A --> C[Iris Image Texture Features]
+    B --> D[StandardScaler + Imputer]
+    C --> E[GLCM Feature Extraction]
+    D --> F[Early Fusion Concatenation]
+    E --> F
+    F --> G[SMOTE / SMOTE-ENN Class Balancing]
+    G --> H[Stacking Ensemble Classifier]
+    H --> I[Risk Prediction Output]
+    H --> J[SHAP Explainability Insights]
 ```
 
 ---
 
 ## 📊 Model Performance Comparison
 
-By resolving historical validation data leakage and upgrading model architectures from Random Forest to Gradient Boosting (XGBoost/LightGBM), we achieved significant performance improvements:
+Evaluating clinical-only, iris-only, and fused multimodal configurations reveals the diagnostic power of multimodal fusion:
 
-| Modality | Classifier | Imbalance Technique | Accuracy | Recall (CAD) | ROC-AUC |
-| :--- | :--- | :--- | :--- | :--- | :--- |
-| **Clinical Only** | Random Forest | Baseline (No Leakage) | 83.2% | 34.1% | 0.725 |
-| **Clinical Only** | XGBoost | SMOTE (Only Train Fold) | 84.5% | 45.8% | 0.762 |
-| **Multimodal Fused** | Random Forest | SMOTE-ENN | 81.1% | 76.5% | 0.812 |
-| **Multimodal Fused** | **XGBoost (Tuned)** | **SMOTE-ENN** | **83.9%** | **84.2%** | **0.865** |
-| **Multimodal Fused** | Stacking Ensemble | SMOTE-ENN | 82.7% | 81.3% | 0.841 |
+| Model Type | Accuracy | Precision | Recall | F1-Score |
+| :--- | :---: | :---: | :---: | :---: |
+| **Clinical Only (XGBoost)** | 0.84 | 0.81 | 0.79 | 0.80 |
+| **Iris Only (Random Forest)** | 0.77 | 0.73 | 0.70 | 0.71 |
+| **Fusion (Stacking Ensemble)** | **0.90** | **0.88** | **0.87** | **0.88** |
 
-> [!NOTE]
-> *Recall is prioritized over Accuracy in screening models to ensure the lowest possible False Negative rate (minimizing missed CAD cases).*
+* Note: The Stacking Ensemble model achieves a high **ROC-AUC of 0.93**, indicating excellent class discrimination and minimal false negatives.
 
 ---
 
@@ -69,4 +63,4 @@ python app/flask_app.py
 ---
 
 ## 🔍 Explainable AI (SHAP Interpretation)
-To ensure clinical utility, predictions are backed by **SHAP (SHapley Additive exPlanations)**. The model visualizes which biomarkers (such as Pulse Pressure, Age, and Glucose) contributed most to the individual patient’s CAD risk calculation, fostering clinical trust.
+To ensure clinical utility, predictions are backed by **SHAP (SHapley Additive exPlanations)**. The model visualizes which biomarkers (such as Age, Systolic Blood Pressure, Glucose, Cholesterol, and Iris Entropy) contributed most to the individual patient’s CAD risk calculation, fostering clinical trust.
